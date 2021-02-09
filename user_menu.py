@@ -78,5 +78,3 @@ class UserMenu():
 
     def exit_handler(self):
         pass
-
-
