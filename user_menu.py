@@ -4,11 +4,12 @@ if TYPE_CHECKING:
     from bank import Bank
     from account import Account
 
-
+from db_utils import *
 class UserMenu():
     def __init__(self,current_user:"User",bank:"Bank") -> None:
         self.current_user=current_user
         self.bank=bank
+        self.current_account:"Account"=self.current_user.current_account()
         self.choices={
             "1": self.deposit_handler,
             "2": self.withdraw_handler,
@@ -23,7 +24,6 @@ class UserMenu():
 
     def run(self):
         print("Welcome {} {}".format(self.current_user.fname,self.current_user.lname))
-        print("Your current account is "+self.current_user.current_account.id)
         user_menu="""
                         User Menu
 
@@ -55,27 +55,26 @@ class UserMenu():
         pass
 
     def view_accounts_handler(self):
-        print([obj.id for obj in self.current_user.accounts])
+        pass
     
     def change_addess_handler(self):
         pass
     
     def withdraw_handler(self):
-        current_account:"Account"=self.current_user.current_account
         withdraw=int(input("Enter amount to be withdrawn "))
-        current_account.withdraw(withdraw)
+        self.current_account.withdraw(withdraw)
         self.check_balance_handler()
 
     
     def deposit_handler(self):
-        current_account:"Account"=self.current_user.current_account
+
         deposit=int(input("Enter amount to be deposited "))
-        current_account.deposit(deposit)
+        self.current_account.deposit(deposit)
         self.check_balance_handler()
     
     def check_balance_handler(self):
-        current_account:"Account"=self.current_user.current_account
-        print("Your current balance is "+current_account.balance())
+    
+        print("Your current balance is "+str(self.current_account.get_balance()))
 
     def exit_handler(self):
         pass

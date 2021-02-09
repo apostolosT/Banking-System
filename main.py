@@ -2,19 +2,13 @@ from user import User
 from bank import Bank
 from menu import Menu
 from user_menu import UserMenu
+from db_utils import *
 import os
 
-# def create_account(bank:'Bank',user:'User'):
-#     bank.open_account(user)
-
-# user_actions={'1':create_account}
-
-
-
 def main():
-    if("users.csv" in os.listdir('data') and "accounts.csv" in os.listdir('data')):
-        os.remove("data/accounts.csv")
-        os.remove("data/users.csv")
+    # delete_all_records("users")
+    # delete_all_records("accounts")
+
 
     main_menu=Menu()
     bank=Bank()
@@ -35,12 +29,27 @@ def main():
 
                     if(registration.lower()=='no'):
                         print("REGISTER TAB")
-                        user=User()
-                        login=user.register()
-                        if login:
+                        fname = input("Enter first name: ")
+                        lname = input("Enter last name: ")
+                        username = input("Enter username: ")
+                        password = input("Enter password: ")
+                        pass_check = input("Enter password again: ")
+                        register=False
+
+                        if password == pass_check:
+                            print("Password match, you can login")
+                            print("Registration succesfull")
+                            register=True
+                        
+                        else:
+                            print("Something Went Wrong")
+                            register=False
+
+                        if register:
+                            user=User(0,fname,lname,username,password)
                             bank.register_user(user)
                             sub_menu=False
-                        
+                            
                     elif(registration.lower()=='yes'):
                         print("LOGIN TAB")
                         print("Please enter username")
@@ -48,10 +57,11 @@ def main():
                         print("Enter password")
                         password=input()
                         
-                        user:'User'=bank.verify_login(username,password)
-
+                        user=bank.verify_login(username,password)
+                        
                         if(user):
-                            user_menu=UserMenu(user,bank)
+                            current_user=User(*user)
+                            user_menu=UserMenu(current_user,bank)
                             user_menu.run()
                         else:
                             print("User not found")
